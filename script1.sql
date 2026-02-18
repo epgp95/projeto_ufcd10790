@@ -4,11 +4,13 @@ Create table Autores (
     nome_autor varchar(255) not null,
     nacionalidade varchar(255)
 );
+
 -- Tabela que guarda os livros disponíveis na livraria, incluindo o título, autor, género, ano de publicação, ISBN, formato, preço, disponibilidade e stock.
 Create table Generos (
     id_genero int auto_increment primary key,
     nome_genero varchar(255) not null
 );
+
 -- Tabela principal dos livros disponíveis na livraria.
 Create table Livros (
     id_livro int auto_increment primary key,
@@ -24,12 +26,29 @@ Create table Livros (
     foreign key (id_genero) references Generos(id_genero),
     foreign key (id_autor) references Autores(id_autor)
 );
+
 -- Tabela que regista todas as vendas realizadas.
 Create table Vendas (
     id_venda int auto_increment primary key,
-    id_livro int,
     data_venda datetime default current_timestamp,
+    valor_total decimal(10, 2) default 0.00,
+    foreign key (id_livro) references Livros(id_livro)
+);
+
+/* 
+Tabela responsável por registar os livros incluídos em cada venda.
+
+Cada venda pode conter vários livros, por isso esta tabela funciona como
+uma lista de itens associados à venda.
+Esta estrutura permite que uma única venda tenha vários livros,
+ao contrário da tabela Vendas, que representa apenas a transação geral.
+*/
+Create table ItensVenda (
+    id_item int auto_increment primary key,
+    id_venda int,
+    id_livro int,
     quantidade int,
-    valor_total decimal(10, 2),
+    preco_unitario decimal(10, 2),
+    foreign key (id_venda) references Vendas(id_venda),
     foreign key (id_livro) references Livros(id_livro)
 );
